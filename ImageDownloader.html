@@ -61,6 +61,7 @@
 
             if (url) {
                 const img = document.createElement('img');
+                img.crossOrigin = 'Anonymous'; // This is crucial for cross-origin requests
                 img.src = url;
                 img.alt = 'Image';
                 img.onload = () => {
@@ -68,20 +69,19 @@
                     imageContainer.appendChild(img);
                     downloadButton.style.display = 'inline-block';
                     downloadButton.onclick = () => {
-                        fetch(url)
-                            .then(response => response.blob())
-                            .then(blob => {
-                                const file = new Blob([blob], { type: blob.type });
-                                const a = document.createElement('a');
-                                a.href = URL.createObjectURL(file);
-                                a.download = 'downloaded_image.jpg';
-                                a.click();
-                                URL.revokeObjectURL(a.href);
-                            })
-                            .catch(error => {
-                                console.error('Download error:', error);
-                                alert('Failed to download image. Please check the URL and try again.');
-                            });
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        canvas.toBlob(blob => {
+                            const file = new Blob([blob], { type: 'image/jpeg' });
+                            const a = document.createElement('a');
+                            a.href = URL.createObjectURL(file);
+                            a.download = 'downloaded_image.jpg';
+                            a.click();
+                            URL.revokeObjectURL(a.href);
+                        }, 'image/jpeg');
                     };
                 };
                 img.onerror = () => {
