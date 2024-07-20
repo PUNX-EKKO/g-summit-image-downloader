@@ -4,74 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Display and Download</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-
-        .container {
-            text-align: center;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Image Display and Download</h1>
-        <input type="text" id="imageUrlInput" placeholder="Enter image URL here">
-        <button id="loadImageButton">Load Image</button>
-        <div id="imageContainer" class="hidden">
-            <img id="displayedImage" src="" alt="Image will be displayed here">
-            <button id="downloadButton">Download Image</button>
-        </div>
-    </div>
+    <h1>Image Display and Download</h1>
+    <div id="imageContainer"></div>
+    <br>
+    <a id="downloadLink" style="display: none;">Download Image</a>
+
     <script>
-        document.getElementById('loadImageButton').addEventListener('click', function() {
-            const imageUrl = document.getElementById('imageUrlInput').value;
-            const displayedImage = document.getElementById('displayedImage');
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        function displayImage(url) {
             const imageContainer = document.getElementById('imageContainer');
+            const downloadLink = document.getElementById('downloadLink');
 
-            if (imageUrl) {
-                displayedImage.src = imageUrl;
-                imageContainer.classList.remove('hidden');
+            if (url) {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Image';
+                img.style.maxWidth = '500px';
+                img.style.display = 'block';
+                img.onload = () => {
+                    imageContainer.innerHTML = '';
+                    imageContainer.appendChild(img);
+                    downloadLink.href = url;
+                    downloadLink.download = 'downloaded_image';
+                    downloadLink.textContent = 'Download Image';
+                    downloadLink.style.display = 'block';
+                };
+                img.onerror = () => {
+                    imageContainer.innerHTML = 'Failed to load image. Please check the URL and try again.';
+                    downloadLink.style.display = 'none';
+                };
             } else {
-                alert('Please enter a valid image URL');
+                imageContainer.innerHTML = 'No image URL provided.';
+                downloadLink.style.display = 'none';
             }
-        });
+        }
 
-        document.getElementById('downloadButton').addEventListener('click', function() {
-            const displayedImage = document.getElementById('displayedImage');
-            const imageUrl = displayedImage.src;
-
-            if (imageUrl) {
-                const link = document.createElement('a');
-                link.href = imageUrl;
-                link.download = 'downloaded_image';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                alert('No image to download');
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            const imageUrl = getUrlParameter('image');
+            displayImage(imageUrl);
         });
     </script>
 </body>
