@@ -4,12 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Display and Download</title>
+    <style>
+        #downloadLink {
+            display: none;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #downloadLink:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Image Display and Download</h1>
     <div id="imageContainer"></div>
     <br>
-    <a id="downloadLink" style="display: none;">Download Image</a>
+    <a id="downloadLink">Download Image</a>
 
     <script>
         function getUrlParameter(name) {
@@ -34,8 +49,7 @@
                     imageContainer.appendChild(img);
                     downloadLink.href = url;
                     downloadLink.download = 'downloaded_image';
-                    downloadLink.textContent = 'Download Image';
-                    downloadLink.style.display = 'block';
+                    downloadLink.style.display = 'inline-block';
                 };
                 img.onerror = () => {
                     imageContainer.innerHTML = 'Failed to load image. Please check the URL and try again.';
