@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Downloader</title>
+    <title>Image Display and Download</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,52 +17,51 @@
 
         .container {
             text-align: center;
-            background: white;
+            background-color: white;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        input {
-            width: 300px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
+        .hidden {
+            display: none;
         }
 
         img {
-            margin-top: 20px;
             max-width: 100%;
             height: auto;
-            border-radius: 4px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Image Downloader</h1>
-        <input type="text" id="imageUrl" placeholder="Enter Image URL">
-        <button onclick="downloadImage()">Download Image</button>
-        <img id="imagePreview" src="" alt="Image Preview" style="display: none;">
+        <h1>Image Display and Download</h1>
+        <input type="text" id="imageUrlInput" placeholder="Enter image URL here">
+        <button id="loadImageButton">Load Image</button>
+        <div id="imageContainer" class="hidden">
+            <img id="displayedImage" src="" alt="Image will be displayed here">
+            <button id="downloadButton">Download Image</button>
+        </div>
     </div>
     <script>
-        function downloadImage() {
-            const imageUrl = document.getElementById('imageUrl').value;
+        document.getElementById('loadImageButton').addEventListener('click', function() {
+            const imageUrl = document.getElementById('imageUrlInput').value;
+            const displayedImage = document.getElementById('displayedImage');
+            const imageContainer = document.getElementById('imageContainer');
+
+            if (imageUrl) {
+                displayedImage.src = imageUrl;
+                imageContainer.classList.remove('hidden');
+            } else {
+                alert('Please enter a valid image URL');
+            }
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', function() {
+            const displayedImage = document.getElementById('displayedImage');
+            const imageUrl = displayedImage.src;
+
             if (imageUrl) {
                 const link = document.createElement('a');
                 link.href = imageUrl;
@@ -70,15 +69,10 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
-                // Show preview of the image
-                const imagePreview = document.getElementById('imagePreview');
-                imagePreview.src = imageUrl;
-                imagePreview.style.display = 'block';
             } else {
-                alert('Please enter a valid image URL');
+                alert('No image to download');
             }
-        }
+        });
     </script>
 </body>
 </html>
