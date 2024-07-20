@@ -42,55 +42,12 @@
             background-color: #45a049;
         }
     </style>
+</head>
+<body>
+    <div id="imageContainer"></div>
+    <button id="downloadButton">Download Image</button>
+
     <script>
-        // Include FileSaver.js library
-        !(function(a, b) {
-            "function" == typeof define && define.amd ? define([], b) : "object" == typeof exports ? (module.exports = b()) : (a.saveAs = b());
-        })(this, function() {
-            "use strict";
-            var a = function() {
-                return "undefined" == typeof window || "undefined" != typeof navigator && /MSIE [1-9]\./.test(navigator.userAgent)
-                    ? !1
-                    : "download" in HTMLAnchorElement.prototype;
-            };
-            var b = function(a) {
-                var b = document.createElement("a");
-                return b.href = a, b.download = "", b;
-            };
-            var c = function(a) {
-                var b = new Blob([a], { type: "application/octet-stream" });
-                return URL.createObjectURL(b);
-            };
-            var d = function(a, b) {
-                var c = new XMLHttpRequest();
-                return c.open("GET", a), c.responseType = "blob", c.onload = function() {
-                    return b(c.response);
-                }, c.send(), c;
-            };
-            var e = function(a) {
-                return /^[\w-]+:\//.test(a) ? d(a, function(a) {
-                    return b(a).click();
-                }) : b(c(a)).click();
-            };
-            var f = a();
-            var g = (a = function(a, b) {
-                var c = "application/octet-stream" === a.type, d = "string" == typeof b ? b : "download";
-                if (f) {
-                    var e = URL.createObjectURL(a), g = document.createElement("a");
-                    return g.href = e, g.download = d, g.click(), void setTimeout(function() {
-                        URL.revokeObjectURL(e);
-                    }, 4e4);
-                }
-                if (window.navigator.msSaveOrOpenBlob) return navigator.msSaveOrOpenBlob(a, b);
-                var h = window.open("", "_blank");
-                h && (h.document.title = d, h.document.body.innerText = "downloading..."), setTimeout(function() {
-                    var b = c ? c : c(a);
-                    window.open(b);
-                }, 100);
-            });
-            return g;
-        });
-        
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -114,10 +71,15 @@
                         fetch(url)
                             .then(response => response.blob())
                             .then(blob => {
-                                const file = new File([blob], 'downloaded_image.jpg', { type: blob.type });
-                                saveAs(file);
+                                const file = new Blob([blob], { type: blob.type });
+                                const a = document.createElement('a');
+                                a.href = URL.createObjectURL(file);
+                                a.download = 'downloaded_image.jpg';
+                                a.click();
+                                URL.revokeObjectURL(a.href);
                             })
-                            .catch(() => {
+                            .catch(error => {
+                                console.error('Download error:', error);
                                 alert('Failed to download image. Please check the URL and try again.');
                             });
                     };
@@ -137,9 +99,5 @@
             displayImage(imageUrl);
         });
     </script>
-</head>
-<body>
-    <div id="imageContainer"></div>
-    <button id="downloadButton">Download Image</button>
 </body>
 </html>
