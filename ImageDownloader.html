@@ -6,9 +6,24 @@
     <title>Download Image</title>
 </head>
 <body>
-    <a id="downloadLink" href="https://d2qf6ukcym4kn9.cloudfront.net/final_futuristicmale2-fbcdce36-533b-49d4-b7b4-e898444d6613-2028.png" download="futuristic_image.png">Download Image</a>
     <script>
-        document.getElementById('downloadLink').click();
+        // Automatically triggers the PHP download script
+        window.onload = function() {
+            window.location.href = '?download=true';
+        };
     </script>
+    <?php
+    if (isset($_GET['download'])) {
+        $file_url = 'https://d2qf6ukcym4kn9.cloudfront.net/final_futuristicmale2-fbcdce36-533b-49d4-b7b4-e898444d6613-2028.png';
+        header('Content-Type: application/octet-stream');
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-disposition: attachment; filename=\"" . basename($file_url) . "\"");
+        readfile($file_url);
+        exit;
+    }
+    ?>
+    <noscript>
+        <a href="?download=true">Click here to download the image</a>
+    </noscript>
 </body>
 </html>
