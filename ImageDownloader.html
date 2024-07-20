@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        img {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Downloader</h1>
+        <input type="text" id="imageUrl" placeholder="Enter Image URL">
+        <button onclick="downloadImage()">Download Image</button>
+        <img id="imagePreview" src="" alt="Image Preview" style="display: none;">
+    </div>
+    <script>
+        function downloadImage() {
+            const imageUrl = document.getElementById('imageUrl').value;
+            if (imageUrl) {
+                const link = document.createElement('a');
+                link.href = imageUrl;
+                link.download = 'downloaded_image';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Show preview of the image
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = imageUrl;
+                imagePreview.style.display = 'block';
+            } else {
+                alert('Please enter a valid image URL');
+            }
+        }
+    </script>
+</body>
+</html>
